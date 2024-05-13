@@ -70,11 +70,27 @@ void insert_in_hash_map(RANDOM_LIST *node, RANDOM_LIST *new_head)
 
 }
 
+RANDOM_LIST *search_in_hash_map(RANDOM_LIST *node)
+{
+	LIST *temp;
+	unsigned int hash = (int ) node;
+	hash = hash%HASH_SIZE;
+	temp = hash_map[hash];
+	while (temp) {
+		if (temp->r_node == node)
+			return temp->new_node;
+	
+		temp = temp->next;
+	}
+	return NULL;
+}
+
 RANDOM_LIST  *copy_random_list(RANDOM_LIST *head)
 {
 	RANDOM_LIST *temp = head;
 	RANDOM_LIST *new_temp, *prev = NULL;
 	RANDOM_LIST *new_head;
+	RANDOM_LIST *x;
 	int address;
 	
 	new_temp = create_random_list_node(temp->x);
@@ -98,7 +114,8 @@ RANDOM_LIST  *copy_random_list(RANDOM_LIST *head)
 	temp = head;
 	new_temp = new_head;
 	while (temp) {
-		//search_in_hash_map();
+		x =  search_in_hash_map(temp);
+		x->random = temp->random;
 		temp = temp->next;
 	}
 	return(new_head);

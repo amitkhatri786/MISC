@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define HASH_SIZE	5381
+#define HASH_SIZE	100003
 
 struct list {
 	struct Node *r_node;
@@ -62,7 +62,7 @@ void insert_in_hash_map(RANDOM_LIST *node, RANDOM_LIST *new_head)
 {
 	unsigned int address = (int )node;
 	LIST *new_node;
-#if 1
+#if 0
 	printf("%s-%d --> %d\n", __func__, __LINE__, address%HASH_SIZE);
 #endif
 	new_node = create_list_node(node, new_head);
@@ -76,7 +76,7 @@ RANDOM_LIST *search_in_hash_map(RANDOM_LIST *node)
 	unsigned int hash = (int ) node;
 	hash = hash%HASH_SIZE;
 	temp = hash_map[hash];
-#if 1
+#if 0
 	printf("%s-%d --> %d\n", __func__, __LINE__, hash);
 #endif
 	while (temp) {
@@ -112,23 +112,22 @@ RANDOM_LIST  *copyRandomList(RANDOM_LIST *head)
 	}
 	//prev->next = NULL;
 	new_temp = new_head;
-	while(new_temp) {
+	/*while(new_temp) {
 		printf("new_temp->val = %d\n", new_temp->val);
 		new_temp = new_temp->next;
-	}
+	}*/
 	temp = head;
 	new_temp = new_head;
 	while (temp) {
 		x = search_in_hash_map(temp);
 		y = search_in_hash_map(temp->random);
         if (x) {
-            printf("x->val= %d\n", x->val);
-            if (y)
-                printf("y->val= %d\n", y->val);
-		    x->random = y;
+           // printf("x->val= %d\n", x->val);
+            //if (y)
+            //    printf("y->val= %d\n", y->val);
+		x->random = y;
         }
 		temp = temp->next;
 	}
 	return(new_head);
 }
-

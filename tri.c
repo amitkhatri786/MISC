@@ -1,10 +1,15 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+
 struct trie{
 	struct trie *next[26];
 	int is_end;
+	int prefix_count;
 };
 typedef struct trie TRIE;
 
-TRIE buffer[1000000];
+TRIE buffer[2000000];
 int buffer_count = 0;
 TRIE *root;
 char str[25];
@@ -16,10 +21,12 @@ TRIE *get_trie_node()
 	int i;
 	temp = &buffer[buffer_count];
 	buffer_count++;
+#if 1
 	for (i = 0; i < 26; i++) 
 		temp->next[i] = NULL;
 	temp->is_end = 0;
-
+	temp->prefix_count = 0;
+#endif
 	return(temp);
 }
 
@@ -30,7 +37,7 @@ void print_trie(TRIE *root, int len)
 		return;
 	if (root->is_end) {
 		str[len] = '\0';
-		printf("str = %s\n", str);
+		//printf("str = %s\n", str);
 		count++;
 	}
 	for (i = 0; i < 26; i++) {
@@ -46,12 +53,14 @@ int search_in_trie(char *ch)
 	while (*ch) {
 		index = *ch - 'a';
 		if (temp->next[index])
-			temp = temp->next[index];	
+			temp = temp->next[index];
+		else
+			return 0;
 		ch++;
 	}
 	count = 0;
-	print_trie(temp, 0);
-	return(count);
+//	print_trie(temp, 0);
+	return(temp->prefix_count);
 }
 
 
@@ -66,6 +75,7 @@ void insert_in_trie(char *ch)
 		if (!temp->next[x])
 			temp->next[x] = get_trie_node();
 		temp = temp->next[x];
+		temp->prefix_count++;
 		ch++;
 	}
 	temp->is_end = 1;
@@ -83,3 +93,22 @@ int my_strcmp(char *s1, char *s2)
 
 }
 
+
+
+int main()
+{
+	int t;
+	char query_type[10];
+	char string[30];
+	int x;
+	x = scanf("%d", &t);
+	root = get_trie_node();
+	while(t--) {
+		x = scanf("%s %s", query_type, string);
+		if (!my_strcmp(query_type, "add"))
+			insert_in_trie(string);
+		else if(!my_strcmp(query_type, "find"))
+			printf("%d\n", search_in_trie(string));
+	}
+	return 0;
+}
